@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 
 export default function App() {
   const [showLetter, setShowLetter] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
+
   const [hearts, setHearts] = useState([]);
 
   useEffect(() => {
@@ -35,7 +37,14 @@ export default function App() {
         </div>
       ))}
 
-      {!showLetter ? (
+      {isOpening ? (
+        <div className="relative flex items-center justify-center">
+          <div className="envelope">
+            <div className="flap"></div>
+            <div className="letter-slide"></div>
+          </div>
+        </div>
+      ) : !showLetter ? (
         // Landing Page
         <div className="text-center z-10 px-4 animate-fadeIn">
           {/* Decorative hearts */}
@@ -85,7 +94,13 @@ export default function App() {
 
           {/* Button */}
           <button
-            onClick={() => setShowLetter(true)}
+            onClick={() => {
+              setIsOpening(true);
+              setTimeout(() => {
+                setShowLetter(true);
+                setIsOpening(false);
+              }, 1800);
+            }}
             className="group relative bg-gradient-to-r from-rose-500 to-pink-600 text-white px-12 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 animate-bounce-subtle"
           >
             <span className="flex items-center gap-2">
@@ -127,7 +142,7 @@ export default function App() {
       ) : (
         // Love Letter Page
         <div className="max-w-2xl mx-auto px-4 py-8 z-10 animate-fadeIn">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 relative overflow-hidden letter-open">
             {/* Letter decorations */}
             <div className="absolute top-0 right-0 text-pink-200 text-9xl opacity-30 transform rotate-12">
               ♥
@@ -148,7 +163,7 @@ export default function App() {
               </h2>
 
               <div className="space-y-6 text-gray-700 leading-relaxed text-lg">
-                <p className="animate-slideUp delay-100">
+                <p className="typewriter delay-100">
                   My dearest Kukku, It has been four years of loving you from a
                   distance, and yet my heart has never felt closer to anyone.
                   Even though we have met only three or four times, those
@@ -181,7 +196,7 @@ export default function App() {
 
                 <div className="text-center mt-12 animate-slideUp delay-500">
                   <p
-                    className="text-2xl font-bold"
+                    className="text-2xl font-bold love-glow"
                     style={{ color: "#e91e63" }}
                   >
                     I love you more than words can ever say ♥
@@ -202,6 +217,27 @@ export default function App() {
               {/* Hearts decoration */}
               <div className="flex justify-center gap-4 mt-8 text-3xl text-rose-400 animate-pulse">
                 ♥ ♥ ♥
+              </div>
+
+              <div className="absolute inset-0 pointer-events-none">
+                <div
+                  className="mini-heart"
+                  style={{ left: "10%", animationDelay: "0s" }}
+                >
+                  ♥
+                </div>
+                <div
+                  className="mini-heart"
+                  style={{ left: "80%", animationDelay: "2s" }}
+                >
+                  ♥
+                </div>
+                <div
+                  className="mini-heart"
+                  style={{ left: "50%", animationDelay: "4s" }}
+                >
+                  ♥
+                </div>
               </div>
 
               {/* Back button */}
@@ -355,6 +391,123 @@ export default function App() {
         .delay-2000 {
           animation-delay: 2s;
         }
+        .envelope {
+          position: relative;
+          width: 250px;
+          height: 160px;
+          background: #f06292;
+          border-radius: 10px;
+          overflow: hidden;
+        }
+
+      .flap {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #ec407a;
+        clip-path: polygon(0 0, 50% 60%, 100% 0);
+        transform-origin: top;
+        animation: openFlap 1s ease forwards;
+      }
+
+      .letter-slide {
+        position: absolute;
+        width: 90%;
+        height: 140px;
+        background: white;
+        left: 5%;
+        bottom: -140px;
+        border-radius: 8px;
+        animation: slideLetter 1.5s ease forwards 0.5s;
+      }
+
+      @keyframes openFlap {
+        0% {
+          transform: rotateX(0deg);
+        }
+        100% {
+          transform: rotateX(180deg);
+        }
+      }
+
+      @keyframes slideLetter {
+        0% {
+          bottom: -140px;
+        }
+        100% {
+          bottom: 10px;
+        }
+      }
+
+      .letter-open {
+        animation: unfoldLetter 1.2s ease-out forwards;
+        transform-origin: top;
+      }
+
+      @keyframes unfoldLetter {
+        0% {
+          transform: scaleY(0.2);
+          opacity: 0;
+        }
+        60% {
+          transform: scaleY(1.05);
+          opacity: 1;
+        }
+        100% {
+          transform: scaleY(1);
+        }
+      }
+
+      .typewriter {
+        overflow: hidden;
+        white-space: normal;
+        animation: fadeInText 1s ease forwards;
+        opacity: 0;
+      }
+
+      @keyframes fadeInText {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .love-glow {
+        animation: glowPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes glowPulse {
+        0%, 100% {
+          text-shadow: 0 0 5px #ff80ab, 0 0 10px #ff4081;
+        }
+        50% {
+          text-shadow: 0 0 15px #ff1744, 0 0 25px #f50057;
+        }
+      }
+        .mini-heart {
+          position: absolute;
+          bottom: -20px;
+          font-size: 20px;
+          color: #f06292;
+          opacity: 0.3;
+          animation: floatMini 8s linear infinite;
+        }
+
+        @keyframes floatMini {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(-400px);
+          }
+        }
+
+
+
+
       `}</style>
     </div>
   );
